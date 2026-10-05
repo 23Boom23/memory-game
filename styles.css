@@ -37,13 +37,17 @@ button { font: inherit; cursor: pointer; }
 .stat-label { color: #6c6871; font-size: 14px; }
 .stat-value { font-size: 25px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .board { width: min(100%, 620px, max(350px, calc(100dvh - 300px))); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.card { display: block; position: relative; width: 100%; aspect-ratio: 1; padding: 0; background: none; border: 0; border-radius: 7px; perspective: 900px; -webkit-tap-highlight-color: transparent; animation: card-deal 440ms cubic-bezier(.2,.75,.25,1) both; animation-delay: calc(var(--deal-index) * 24ms); transition: transform 180ms ease; }
-.card:not(.is-open):hover { transform: translateY(-5px) rotate(-1deg); }
-.card-inner { display: block; position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 540ms cubic-bezier(.2,.8,.2,1); }
+.card { display: block; position: relative; width: 100%; aspect-ratio: 1; padding: 0; background: none; border: 0; border-radius: 7px; perspective: 900px; -webkit-tap-highlight-color: transparent; animation: card-deal 440ms cubic-bezier(.2,.75,.25,1) backwards; animation-delay: calc(var(--deal-index) * 24ms); transition: transform 260ms cubic-bezier(.2,.8,.2,1); }
+.card:hover { transform: translateY(-7px) scale(1.035); }
+.card:active { transform: translateY(-2px) scale(.98); }
+.card-inner { display: block; position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 760ms cubic-bezier(.18,.75,.18,1); }
 .card.is-open .card-inner { transform: rotateY(180deg); }
 .card-face { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; border-radius: 7px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.card-back { background: #30283d; border: 2px solid #1d1a2b; box-shadow: 0 4px 0 #1b1724; }
+.card-back { background: #30283d; border: 2px solid #1d1a2b; box-shadow: 0 4px 0 #1b1724; transition: border-color 260ms ease, box-shadow 260ms ease, background 260ms ease; }
 .card-back::before { content: ''; position: absolute; inset: 9px; border: 1px solid #9f8665; border-radius: 3px; }
+.card-back::after { content: ''; position: absolute; inset: -20% auto -20% -65%; width: 38%; background: linear-gradient(90deg, transparent, #fff8, transparent); transform: skewX(-20deg); transition: left 620ms cubic-bezier(.2,.8,.2,1); }
+.card:not(.is-open):hover .card-back { border-color: #d0ae68; background: #43354e; box-shadow: 0 12px 26px #38263755, 0 0 0 3px #e2bb72a8; }
+.card:not(.is-open):hover .card-back::after { left: 140%; }
 .card-back-mark { width: 34%; aspect-ratio: 1; display: grid; place-items: center; background: #c49b57; transform: rotate(45deg); border: 5px solid #f1daa7; box-shadow: 0 0 0 6px #222031; }
 .card-back-mark::after { content: '✦'; color: #3b2b38; font-size: 22px; transform: rotate(-45deg); }
 .card-front { transform: rotateY(180deg); background: #fffaf0; border: 2px solid #d9cfbb; box-shadow: 0 4px 0 #c9bdab; }
@@ -52,6 +56,7 @@ button { font: inherit; cursor: pointer; }
 .card.is-matched .card-front { border-color: #c8a660; background: #fff7e4; animation: matched 640ms ease; }
 .card.is-matched::after { content: '✦'; position: absolute; top: -15px; right: -7px; z-index: 2; color: #d3a84f; font-size: 29px; pointer-events: none; animation: match-spark 720ms ease-out both; }
 .card-image { display: block; width: 72%; height: 72%; object-fit: contain; pointer-events: none; user-select: none; }
+.card.is-open .card-image { animation: reveal-symbol 640ms 170ms backwards; }
 .site-footer { padding: 14px; color: #89838d; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0; }
 
 .modal { width: min(100% - 32px, 450px); max-height: min(85vh, 700px); padding: 0; border: 0; border-radius: 8px; color: #282330; background: transparent; box-shadow: 0 24px 80px #1b142466; }
@@ -78,17 +83,28 @@ button { font: inherit; cursor: pointer; }
 @keyframes header-in { from { opacity: 0; transform: translateY(-14px); } }
 @keyframes rise-in { from { opacity: 0; transform: translateY(16px); } }
 @keyframes card-deal { from { opacity: 0; transform: translateY(20px) scale(.92); } }
+@keyframes reveal-symbol { from { opacity: .3; transform: translateY(8px) scale(.7); } }
 @keyframes card-shine { from { transform: translateX(-280%) rotate(20deg); } to { transform: translateX(580%) rotate(20deg); } }
 @keyframes matched { 50% { transform: rotateY(180deg) scale(1.045); box-shadow: 0 0 0 6px #e9c9737a; } }
 @keyframes match-spark { 0% { opacity: 0; transform: translateY(10px) scale(.3) rotate(-35deg); } 45% { opacity: 1; transform: translateY(-7px) scale(1.2) rotate(10deg); } 100% { opacity: 0; transform: translateY(-18px) scale(.7) rotate(35deg); } }
 @keyframes modal-in { from { opacity: 0; transform: translateY(22px) scale(.96); } }
 @keyframes backdrop-in { from { opacity: 0; } }
 @keyframes pop { 0% { transform: scale(.65) rotate(-20deg); opacity: 0; } 70% { transform: scale(1.08) rotate(6deg); } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+@keyframes pointer-twinkle { 50% { opacity: .45; transform: scale(.65) rotate(35deg); } }
+@keyframes spark-trail { from { opacity: 1; transform: translate(-50%, -50%) scale(.7) rotate(0); } to { opacity: 0; transform: translate(calc(-50% + var(--spark-x)), calc(-50% + var(--spark-y))) scale(.1) rotate(80deg); } }
+
+.pointer-layer { position: fixed; inset: 0; z-index: 1000; pointer-events: none; }
+.wand-pointer { position: absolute; top: 0; left: 0; width: 48px; height: 48px; background: url('assets/wand-cursor.svg') center / contain no-repeat; opacity: 0; }
+.wand-pointer.is-visible { opacity: 1; }
+.wand-pointer::after { content: '✦'; position: absolute; top: -4px; left: 34px; color: #ffe6a0; font-size: 18px; text-shadow: 0 0 8px #f5b84f; animation: pointer-twinkle 750ms ease-in-out infinite; }
+.wand-spark { position: absolute; color: #f6ce78; font-size: 15px; line-height: 1; text-shadow: 0 0 7px #f4ab41; animation: spark-trail 650ms ease-out forwards; }
+.wand-spark::before { content: '✦'; }
 
 @media (pointer: fine) {
   body { cursor: url('assets/wand-cursor.svg') 38 10, auto; }
   button { cursor: url('assets/wand-cursor.svg') 38 10, pointer; }
 }
+body.has-magic-cursor, body.has-magic-cursor button { cursor: none; }
 
 @media (max-width: 640px) {
   .header-inner { width: min(100% - 28px, 620px); min-height: 104px; align-items: stretch; flex-direction: column; justify-content: center; gap: 12px; padding: 12px 0; }

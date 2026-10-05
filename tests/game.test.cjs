@@ -6,7 +6,7 @@ const test = require('node:test');
 
 const source = readFileSync(join(__dirname, '..', 'script.js'), 'utf8');
 
-function createGame(savedData = new Map()) {
+function createGame(savedData = new Map(), cursorEnabled = false) {
   const timers = new Map();
   let now = 0;
   let nextTimer = 1;
@@ -63,9 +63,21 @@ function createGame(savedData = new Map()) {
     }
   }
 
-  document = { body: new Node('body'), activeElement: null, createElement: (tag) => new Node(tag) };
+  const documentListeners = new Map();
+  document = {
+    body: new Node('body'),
+    activeElement: null,
+    createElement: (tag) => new Node(tag),
+    addEventListener(name, listener) {
+      documentListeners.set(name, [...(documentListeners.get(name) || []), listener]);
+    },
+    trigger(name, event) {
+      for (const listener of documentListeners.get(name) || []) listener(event);
+    },
+  };
   const context = {
     document,
+    ...(cursorEnabled ? { window: { matchMedia: () => ({ matches: true }) } } : {}),
     localStorage: {
       getItem: (key) => savedData.get(key) ?? null,
       setItem: (key, value) => savedData.set(key, value),
@@ -189,4 +201,16 @@ test('victory saves once, finished cards stay inert, and leaderboard survives re
   assert.equal(reloaded.one('stats').textContent, 'Ходы0Найдено пар0 / 8');
   reloaded.action('Таблица лидеров').click();
   assert.equal(reloaded.all((node) => node.tagName === 'tbody')[0].children.length, 1);
+});
+
+test('magic cursor follows the pointer and emits sparks without affecting the board', () => {
+  const game = createGame(new Map(), true);
+  game.document.trigger('pointermove', {
+    pointerType: 'mouse', clientX: 100, clientY: 80, timeStamp: 100,
+  });
+  assert.equal(game.one('wand-pointer').style.transform, 'translate3d(62px, 70px, 0)');
+  assert.equal(game.all((node) => node.className === 'wand-spark').length, 1);
+  assert.equal(game.cards().length, 16);
+  game.document.trigger('pointerdown', { pointerType: 'mouse', clientX: 100, clientY: 80 });
+  assert.equal(game.all((node) => node.className === 'wand-spark').length, 6);
 });

@@ -1,5 +1,5 @@
 const symbols = [
-  { id: 'glasses', name: 'очки Гарри' },
+  { id: 'glasses', name: 'круглые очки' },
   { id: 'sorting-hat', name: 'Распределяющая шляпа' },
   { id: 'snitch', name: 'золотой снитч' },
   { id: 'wand', name: 'волшебная палочка' },
@@ -89,7 +89,7 @@ header.append(headerInner);
 
 const main = element('main', 'main');
 const headingRow = element('div', 'heading-row');
-const heading = element('h1', 'page-title', 'Гарри Поттер');
+const heading = element('h1', 'page-title', 'Волшебные пары');
 headingRow.append(heading);
 
 const game = element('section', 'game');
@@ -308,4 +308,44 @@ function startGame() {
 
 app.append(header, main, footer, dialog);
 document.body.append(app);
+
+if (typeof window !== 'undefined' && window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+  const pointerLayer = element('div', 'pointer-layer');
+  pointerLayer.setAttribute('aria-hidden', 'true');
+  const wandPointer = element('span', 'wand-pointer');
+  pointerLayer.append(wandPointer);
+  document.body.append(pointerLayer);
+  document.body.classList.add('has-magic-cursor');
+  let lastSpark = -100;
+
+  function spark(x, y) {
+    const particle = element('span', 'wand-spark');
+    particle.style.left = `${x}px`;
+    particle.style.top = `${y}px`;
+    particle.style.setProperty('--spark-x', `${Math.round((Math.random() - .5) * 30)}px`);
+    particle.style.setProperty('--spark-y', `${Math.round(-10 - Math.random() * 22)}px`);
+    particle.addEventListener('animationend', () => particle.remove(), { once: true });
+    pointerLayer.append(particle);
+  }
+
+  document.addEventListener('pointermove', (event) => {
+    if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+    wandPointer.style.transform = `translate3d(${event.clientX - 38}px, ${event.clientY - 10}px, 0)`;
+    wandPointer.classList.add('is-visible');
+    if (event.timeStamp - lastSpark > 55) {
+      spark(event.clientX, event.clientY);
+      lastSpark = event.timeStamp;
+    }
+  }, { passive: true });
+
+  document.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+    for (let index = 0; index < 5; index += 1) spark(event.clientX, event.clientY);
+  });
+
+  document.addEventListener('pointerout', (event) => {
+    if (!event.relatedTarget) wandPointer.classList.remove('is-visible');
+  });
+}
+
 startGame();
