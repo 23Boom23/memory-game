@@ -22,6 +22,7 @@ function createGame(savedData = new Map()) {
       this.open = false;
       this.isConnected = true;
       this._textContent = '';
+      this.style = { setProperty: () => {} };
       this.classList = {
         add: (name) => {
           this.className = [...new Set([...this.className.split(' ').filter(Boolean), name])].join(' ');

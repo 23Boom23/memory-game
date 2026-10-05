@@ -1,12 +1,12 @@
 const symbols = [
-  { id: 'sun', name: 'солнце' },
-  { id: 'moon', name: 'луна' },
-  { id: 'heart', name: 'сердце' },
-  { id: 'star', name: 'звезда' },
-  { id: 'leaf', name: 'лист' },
-  { id: 'flower', name: 'цветок' },
-  { id: 'bolt', name: 'молния' },
-  { id: 'planet', name: 'планета' },
+  { id: 'glasses', name: 'очки Гарри' },
+  { id: 'sorting-hat', name: 'Распределяющая шляпа' },
+  { id: 'snitch', name: 'золотой снитч' },
+  { id: 'wand', name: 'волшебная палочка' },
+  { id: 'potion', name: 'зелье' },
+  { id: 'broom', name: 'метла' },
+  { id: 'key', name: 'летающий ключ' },
+  { id: 'spellbook', name: 'книга заклинаний' },
 ];
 
 const storageKey = 'memory-game-results-v1';
@@ -76,7 +76,7 @@ const headerInner = element('div', 'header-inner');
 const brand = element('div', 'brand');
 const brandMark = element('span', 'brand-mark');
 brandMark.setAttribute('aria-hidden', 'true');
-const brandText = element('span', 'brand-text', 'MEMORY GAME');
+const brandText = element('span', 'brand-text', 'WIZARDING MEMORY');
 brand.append(brandMark, brandText);
 
 const headerActions = element('nav', 'header-actions');
@@ -89,7 +89,7 @@ header.append(headerInner);
 
 const main = element('main', 'main');
 const headingRow = element('div', 'heading-row');
-const heading = element('h1', 'page-title', 'Найди пары');
+const heading = element('h1', 'page-title', 'Гарри Поттер');
 headingRow.append(heading);
 
 const game = element('section', 'game');
@@ -111,7 +111,7 @@ board.setAttribute('aria-label', '16 карточек');
 game.append(stats, board);
 main.append(headingRow, game);
 
-const footer = element('footer', 'site-footer', 'MEMORY GAME');
+const footer = element('footer', 'site-footer', 'WIZARDING MEMORY');
 const dialog = element('dialog', 'modal');
 dialog.setAttribute('aria-modal', 'true');
 let focusBeforeModal = null;
@@ -195,7 +195,7 @@ function showVictory() {
   const content = element('div', 'victory-content');
   const badge = element('div', 'victory-badge', '✦');
   badge.setAttribute('aria-hidden', 'true');
-  const message = element('p', 'victory-message', 'Все пары найдены!');
+  const message = element('p', 'victory-message', 'Все волшебные пары найдены!');
   const result = element('p', 'victory-result');
   result.append(element('span', '', 'Ходов: '), element('strong', '', String(state.moves)));
   content.append(badge, message, result);
@@ -212,6 +212,7 @@ function updateStats() {
 
 function createCard(card, index) {
   const cardButton = button(undefined, 'card', () => selectCard(card));
+  cardButton.style.setProperty('--deal-index', String(index));
   cardButton.setAttribute('aria-label', `Карточка ${index + 1}, закрыта`);
   const inner = element('span', 'card-inner');
   const back = element('span', 'card-face card-back');
