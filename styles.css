@@ -17,7 +17,7 @@ button { font: inherit; cursor: pointer; }
 .header-inner { width: min(100% - 48px, 1060px); min-height: 82px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
 .brand-mark { width: 28px; height: 28px; display: block; background: #e5bf70; transform: rotate(45deg); border: 6px solid #6b3549; box-shadow: inset 0 0 0 3px #f9edce; }
-.brand-text { font-size: 13px; font-weight: 800; letter-spacing: 1px; }
+.brand-text { font-size: 13px; font-weight: 800; letter-spacing: 0; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
 .action-button { min-height: 40px; padding: 0 17px; border: 1px solid transparent; border-radius: 6px; font-size: 14px; font-weight: 700; transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease; }
 .action-button:hover { transform: translateY(-3px); box-shadow: 0 7px 17px #21192730; }
@@ -52,7 +52,7 @@ button { font: inherit; cursor: pointer; }
 .card.is-matched .card-front { border-color: #c8a660; background: #fff7e4; animation: matched 640ms ease; }
 .card.is-matched::after { content: '✦'; position: absolute; top: -15px; right: -7px; z-index: 2; color: #d3a84f; font-size: 29px; pointer-events: none; animation: match-spark 720ms ease-out both; }
 .card-image { display: block; width: 72%; height: 72%; object-fit: contain; pointer-events: none; user-select: none; }
-.site-footer { padding: 14px; color: #89838d; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 2px; }
+.site-footer { padding: 14px; color: #89838d; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0; }
 
 .modal { width: min(100% - 32px, 450px); max-height: min(85vh, 700px); padding: 0; border: 0; border-radius: 8px; color: #282330; background: transparent; box-shadow: 0 24px 80px #1b142466; }
 .modal::backdrop { background: #18121fc9; animation: backdrop-in 260ms both; }
