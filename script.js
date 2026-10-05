@@ -90,8 +90,7 @@ header.append(headerInner);
 const main = element('main', 'main');
 const headingRow = element('div', 'heading-row');
 const heading = element('h1', 'page-title', 'Найди пары');
-const subtitle = element('p', 'page-subtitle', 'Открой все 8 пар за меньшее число ходов.');
-headingRow.append(heading, subtitle);
+headingRow.append(heading);
 
 const game = element('section', 'game');
 game.setAttribute('aria-label', 'Игровое поле');
